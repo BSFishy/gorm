@@ -6,7 +6,7 @@ import (
 
 type search struct {
 	db               *DB
-	whereConditions  []map[string]interface{}
+	WhereConditions  []map[string]interface{}
 	orConditions     []map[string]interface{}
 	notConditions    []map[string]interface{}
 	havingConditions []map[string]interface{}
