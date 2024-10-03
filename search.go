@@ -34,7 +34,7 @@ type searchPreload struct {
 func (s *search) clone() *search {
 	clone := search{
 		db:               s.db,
-		whereConditions:  make([]map[string]interface{}, len(s.whereConditions)),
+		WhereConditions:  make([]map[string]interface{}, len(s.WhereConditions)),
 		orConditions:     make([]map[string]interface{}, len(s.orConditions)),
 		notConditions:    make([]map[string]interface{}, len(s.notConditions)),
 		havingConditions: make([]map[string]interface{}, len(s.havingConditions)),
@@ -53,8 +53,8 @@ func (s *search) clone() *search {
 		Unscoped:         s.Unscoped,
 		ignoreOrderQuery: s.ignoreOrderQuery,
 	}
-	for i, value := range s.whereConditions {
-		clone.whereConditions[i] = value
+	for i, value := range s.WhereConditions {
+		clone.WhereConditions[i] = value
 	}
 	for i, value := range s.orConditions {
 		clone.orConditions[i] = value
@@ -87,7 +87,7 @@ func (s *search) clone() *search {
 }
 
 func (s *search) Where(query interface{}, values ...interface{}) *search {
-	s.whereConditions = append(s.whereConditions, map[string]interface{}{"query": query, "args": values})
+	s.WhereConditions = append(s.WhereConditions, map[string]interface{}{"query": query, "args": values})
 	return s
 }
 

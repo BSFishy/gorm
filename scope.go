@@ -206,7 +206,7 @@ func (scope *Scope) HasColumn(column string) bool {
 
 // SetColumn to set the column's value, column could be field or field's name/dbname
 func (scope *Scope) SetColumn(column interface{}, value interface{}) error {
-	var updateAttrs = map[string]interface{}{}
+	updateAttrs := map[string]interface{}{}
 	if attrs, ok := scope.InstanceGet("gorm:update_attrs"); ok {
 		updateAttrs = attrs.(map[string]interface{})
 		defer scope.InstanceSet("gorm:update_attrs", updateAttrs)
@@ -727,7 +727,7 @@ func (scope *Scope) whereSQL() (sql string) {
 		}
 	}
 
-	for _, clause := range scope.Search.whereConditions {
+	for _, clause := range scope.Search.WhereConditions {
 		if sql := scope.buildCondition(clause, true); sql != "" {
 			andConditions = append(andConditions, sql)
 		}
@@ -875,7 +875,7 @@ func (scope *Scope) callCallbacks(funcs []*func(s *Scope)) *Scope {
 }
 
 func convertInterfaceToMap(values interface{}, withIgnoredField bool, db *DB) map[string]interface{} {
-	var attrs = map[string]interface{}{}
+	attrs := map[string]interface{}{}
 
 	switch value := values.(type) {
 	case map[string]interface{}:
@@ -958,7 +958,7 @@ func (scope *Scope) rows() (*sql.Rows, error) {
 }
 
 func (scope *Scope) initialize() *Scope {
-	for _, clause := range scope.Search.whereConditions {
+	for _, clause := range scope.Search.WhereConditions {
 		scope.updatedAttrsWithValues(clause["query"])
 	}
 	scope.updatedAttrsWithValues(scope.Search.initAttrs)
@@ -1167,7 +1167,7 @@ func (scope *Scope) createJoinTable(field *StructField) {
 func (scope *Scope) createTable() *Scope {
 	var tags []string
 	var primaryKeys []string
-	var primaryKeyInColumnType = false
+	primaryKeyInColumnType := false
 	for _, field := range scope.GetModelStruct().StructFields {
 		if field.IsNormal {
 			sqlTag := scope.Dialect().DataTypeOf(field)
@@ -1237,7 +1237,7 @@ func (scope *Scope) addForeignKey(field string, dest string, onDelete string, on
 	if scope.Dialect().HasForeignKey(scope.TableName(), keyName) {
 		return
 	}
-	var query = `ALTER TABLE %s ADD CONSTRAINT %s FOREIGN KEY (%s) REFERENCES %s ON DELETE %s ON UPDATE %s;`
+	query := `ALTER TABLE %s ADD CONSTRAINT %s FOREIGN KEY (%s) REFERENCES %s ON DELETE %s ON UPDATE %s;`
 	scope.Raw(fmt.Sprintf(query, scope.QuotedTableName(), scope.quoteIfPossible(keyName), scope.quoteIfPossible(field), dest, onDelete, onUpdate)).Exec()
 }
 
@@ -1283,8 +1283,8 @@ func (scope *Scope) autoMigrate() *Scope {
 }
 
 func (scope *Scope) autoIndex() *Scope {
-	var indexes = map[string][]string{}
-	var uniqueIndexes = map[string][]string{}
+	indexes := map[string][]string{}
+	uniqueIndexes := map[string][]string{}
 
 	for _, field := range scope.GetStructFields() {
 		if name, ok := field.TagSettingsGet("INDEX"); ok {
@@ -1336,8 +1336,8 @@ func (scope *Scope) getColumnAsArray(columns []string, values ...interface{}) (r
 		case reflect.Slice:
 			for i := 0; i < indirectValue.Len(); i++ {
 				var result []interface{}
-				var object = indirect(indirectValue.Index(i))
-				var hasValue = false
+				object := indirect(indirectValue.Index(i))
+				hasValue := false
 				for _, column := range columns {
 					field := object.FieldByName(column)
 					if hasValue || !isBlank(field) {
@@ -1355,7 +1355,7 @@ func (scope *Scope) getColumnAsArray(columns []string, values ...interface{}) (r
 			}
 		case reflect.Struct:
 			var result []interface{}
-			var hasValue = false
+			hasValue := false
 			for _, column := range columns {
 				field := indirectValue.FieldByName(column)
 				if hasValue || !isBlank(field) {
@@ -1419,7 +1419,7 @@ func (scope *Scope) getColumnAsScope(column string) *Scope {
 
 func (scope *Scope) hasConditions() bool {
 	return !scope.PrimaryKeyZero() ||
-		len(scope.Search.whereConditions) > 0 ||
+		len(scope.Search.WhereConditions) > 0 ||
 		len(scope.Search.orConditions) > 0 ||
 		len(scope.Search.notConditions) > 0
 }

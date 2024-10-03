@@ -13,7 +13,7 @@ func TestCloneSearch(t *testing.T) {
 	s1 := s.clone()
 	s1.Where("age = ?", 20).Order("age").Attrs("email", "a@e.org").Select("email")
 
-	if reflect.DeepEqual(s.whereConditions, s1.whereConditions) {
+	if reflect.DeepEqual(s.WhereConditions, s1.WhereConditions) {
 		t.Errorf("Where should be copied")
 	}
 
@@ -37,14 +37,14 @@ func TestWhereCloneCorruption(t *testing.T) {
 			for w := 0; w < whereCount; w++ {
 				s = s.clone().Where(fmt.Sprintf("w%d = ?", w), fmt.Sprintf("value%d", w))
 			}
-			if len(s.whereConditions) != whereCount {
+			if len(s.WhereConditions) != whereCount {
 				t.Errorf("s: where count should be %d", whereCount)
 			}
 
 			q1 := s.clone().Where("finalThing = ?", "THING1")
 			q2 := s.clone().Where("finalThing = ?", "THING2")
 
-			if reflect.DeepEqual(q1.whereConditions, q2.whereConditions) {
+			if reflect.DeepEqual(q1.WhereConditions, q2.WhereConditions) {
 				t.Errorf("Where conditions should be different")
 			}
 		})
